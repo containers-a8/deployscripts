@@ -35,7 +35,7 @@ wait_for (){
     fi
     local COUNTER=0
     local STATE="unknown"
-    while [[ ( $COUNTER -lt 180 ) && ("${STATE}" != "Running") && ("${STATE}" != "Crashed") ]]; do
+    while [[ ( $COUNTER -lt 180 ) && ("${STATE}" != "running") && ("${STATE}" != "Crashed") ]]; do
         let COUNTER=COUNTER+1
         STATE=$($IC_COMMAND inspect $WAITING_FOR 2> /dev/null | grep "Status" | awk '{print $2}' | sed 's/"//g')
         if [ -z "${STATE}" ]; then
