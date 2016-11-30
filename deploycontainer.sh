@@ -47,7 +47,7 @@ wait_for (){
     if [ "$STATE" == "Crashed" ]; then
         return 2
     fi
-    if [ "$STATE" != "Running" ]; then
+    if [ "$STATE" != "running" ]; then
         log_and_echo "$ERROR" "Failed to start instance "
         return 1
     fi
