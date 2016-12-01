@@ -200,13 +200,13 @@ deploy_group() {
     fi
 
     # check to see if that group name is already in use
-    #$IC_COMMAND group inspect ${MY_GROUP_NAME} > /dev/null
-    #local FOUND=$?
-    #if [ ${FOUND} -eq 0 ]; then
-    #    log_and_echo "$ERROR" "${MY_GROUP_NAME} already exists. Please delete it or run group deployment again."
-    #    ${EXT_DIR}/utilities/sendMessage.sh -l bad -m "Deployment of ${MY_GROUP_NAME} failed as the group already exists. $(get_error_info)"
-    #    exit 1
-    #fi
+    $IC_COMMAND group inspect ${MY_GROUP_NAME} > /dev/null
+    local FOUND=$?
+    if [ ${FOUND} -eq 0 ]; then
+        log_and_echo "$ERROR" "${MY_GROUP_NAME} already exists. Please delete it or run group deployment again."
+        ${EXT_DIR}/utilities/sendMessage.sh -l bad -m "Deployment of ${MY_GROUP_NAME} failed as the group already exists. $(get_error_info)"
+        exit 1
+    fi
 
     # check to see if container image is exisit 
     check_image "$IMAGE_NAME"
