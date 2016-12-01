@@ -35,19 +35,19 @@ wait_for (){
     fi
     local COUNTER=0
     local STATE="unknown"
-    while [[ ( $COUNTER -lt 180 ) && ("${STATE}" != "running,") && ("${STATE}" != "Crashed") ]]; do
+    while [[ ( $COUNTER -lt 180 ) && ("${STATE}" != "running") && ("${STATE}" != "crashed") ]]; do
         let COUNTER=COUNTER+1
-        STATE=$($IC_COMMAND inspect $WAITING_FOR 2> /dev/null | grep "Status" | awk '{print $2}' | sed 's/"//g')
+        STATE=$($IC_COMMAND inspect $WAITING_FOR 2> /dev/null | grep "Status" | awk '{print tolower($2)}' | sed 's/\"//g;s/,//g')
         if [ -z "${STATE}" ]; then
             STATE="being placed"
         fi
         log_and_echo "${WAITING_FOR} is ${STATE}"
         sleep 3
     done
-    if [ "$STATE" == "Crashed" ]; then
+    if [ "$STATE" == "crashed" ]; then
         return 2
     fi
-    if [ "$STATE" != "running," ]; then
+    if [ "$STATE" != "running" ]; then
         log_and_echo "$ERROR" "Failed to start instance "
         return 1
     fi
@@ -64,15 +64,15 @@ wait_for_stopped (){
     fi
     local COUNTER=0
     local FOUND=0
-    while [[ ( $COUNTER -lt 60 ) && ("${STATE}" != "Shutdown")  ]]; do
+    while [[ ( $COUNTER -lt 60 ) && ("${STATE}" != "shutdown")  ]]; do
         let COUNTER=COUNTER+1
-        STATE=$($IC_COMMAND inspect $WAITING_FOR 2> /dev/null | grep "Status" | awk '{print $2}' | sed 's/"//g')
+        STATE=$($IC_COMMAND inspect $WAITING_FOR 2> /dev/null | grep "Status" | awk '{print tolower($2)}' | sed 's/\"//g;s/,//g')
         if [ -z "${STATE}" ]; then
             STATE="being deleted"
         fi
         sleep 2
     done
-    if [ "$STATE" != "Shutdown" ]; then
+    if [ "$STATE" != "shutdown" ]; then
         log_and_echo "$ERROR" "Failed to stop instance $WAITING_FOR "
         return 1
     else
